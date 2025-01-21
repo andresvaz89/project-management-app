@@ -14,6 +14,18 @@ function EditProjectPage(props) {
   const {projectId} =useParams()
   const navigate = useNavigate()
 
+  const deleteProject = () => {                    //  <== ADD
+    // Make a DELETE request to delete the project
+    axios
+      .delete(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}`)
+      .then(() => {
+        // Once the delete request is resolved successfully
+        // navigate back to the list of projects.
+        navigate("/projects");
+      })
+      .catch((err) => console.log(err));
+  };  
+
   const handleSubmit = (e)=>{
     e.preventDefault()
     // send a Post request to our server to create a newProject
@@ -34,30 +46,33 @@ function EditProjectPage(props) {
     .catch(err => console.log(err))
 },[projectId])
   
-  return (
-    <div className="EditProjectPage">
-      <h3>Edit the Project</h3>
+return (
+  <div className="EditProjectPage">
+    <h3>Edit the Project</h3>
 
-      <form onSubmit={handleSubmit}>
-        <label>Title:</label>
-        <input
-          type="text"
-          name="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        
-        <label>Description:</label>
-        <textarea
-          name="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+    <form onSubmit={handleSubmit}>
+      <label>Title:</label>
+      <input
+        type="text"
+        name="title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      
+      <label>Description:</label>
+      <textarea
+        name="description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
 
-        <input type="submit" value="Submit" />
-      </form>
-    </div>
-  );
+      <button type="submit">Update Project</button>
+    </form>
+    
+
+    <button onClick={deleteProject}>Delete Project</button>
+  </div>
+);
 }
 
 export default EditProjectPage;
