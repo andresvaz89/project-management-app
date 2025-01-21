@@ -4,17 +4,26 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import.meta.env.VITE_API_URL
+import AddTask from "../components/AddTask";
 
 
 function ProjectDetailsPage (props) {
   const [project, setProject] = useState(null);
  const {projectId}= useParams()
   
+ const getProject = () => {
+  axios
+    .get(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}`)
+    .then((response) => {
+      const oneProject = response.data;
+      setProject(oneProject);
+    })
+    .catch((error) => console.log(error));
+};
+
 useEffect(()=>{
-    axios.get(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}`)
-    .then(response => setProject(response.data))
-    .catch(err => console.log(err))
-},[projectId])
+   getProject()
+},[])
 
   return (
     <div className="ProjectDetails">
@@ -24,6 +33,9 @@ useEffect(()=>{
           <p>{project.description}</p>
         </>
       )}
+
+<AddTask getProject={getProject} projectId={projectId} />    
+
 
       {project &&
         project.tasks.map((task) => (
